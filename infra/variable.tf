@@ -19,5 +19,5 @@ variable "project_name" {
 variable "github_repo" {
   description = "GitHub 仓库名称"
   type        = string
-  default     = "cloud_practice"
+  default     = "JunyIIIChen/cloud_practice"
 }
