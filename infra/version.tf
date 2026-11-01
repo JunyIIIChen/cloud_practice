@@ -12,3 +12,16 @@ terraform {
     path = "terraform.tfstate"
   }
 }
+
+provider "aws" {
+  region  = var.aws_region
+  profile = var.aws_profile
+
+  # 自动给所有资源打上标签，方便在控制台和账单里识别
+  default_tags {
+    tags = {
+      Project   = var.project_name
+      ManagedBy = "terraform"
+    }
+  }
+}
