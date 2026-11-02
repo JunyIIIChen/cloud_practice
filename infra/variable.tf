@@ -21,3 +21,9 @@ variable "github_repo" {
   type        = string
   default     = "JunyIIIChen@131532515/cloud_practice@1441472852"
 }
+
+variable "vpc_cidr" {
+  description = "VPC 的 CIDR 块"
+  type        = string
+  default     = "10.0.0.0/16"
+}
