@@ -1,8 +1,9 @@
 name: Build and push to ECR
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch: # 暂时只手动触发；恢复自动推送时取消下面的注释
+  # push:
+  #   branches: [main]
 
 permissions:
   id-token: write # required to request the OIDC token
