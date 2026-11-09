@@ -1,3 +1,5 @@
+########ec2_security_group###########
+
 resource "aws_security_group" "main" {
   name        = "${var.project_name}-sg"
   description = "Security group for ${var.project_name}"
@@ -14,12 +16,12 @@ resource "aws_vpc_security_group_egress_rule" "outbound" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "inbound" {
-  security_group_id = aws_security_group.main.id
-  description       = "Allow inbound traffic on port 8000"
-  ip_protocol       = "tcp"
-  from_port         = 8000
-  to_port           = 8000
-  cidr_ipv4         = "0.0.0.0/0"
+  security_group_id            = aws_security_group.main.id
+  description                  = "Allow traffic on port 8000 from ALB only"
+  ip_protocol                  = "tcp"
+  from_port                    = 8000
+  to_port                      = 8000
+  referenced_security_group_id = aws_security_group.alb.id
 }
 
 
