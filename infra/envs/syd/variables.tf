@@ -9,12 +9,6 @@ variable "aws_region" {
   default     = "ap-southeast-2"
 }
 
-variable "dr_region" {
-  description = "DR 站点区域（墨尔本），ECR 复制的目标"
-  type        = string
-  default     = "ap-southeast-4"
-}
-
 variable "aws_profile" {
   description = "本地 ~/.aws/config 里使用的 profile"
   type        = string
