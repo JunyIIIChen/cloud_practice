@@ -1,5 +1,5 @@
 module "app" {
-  source = "../../modules/region"
+  source = "../../modules"
 
   project_name  = var.project_name
   env           = var.env
