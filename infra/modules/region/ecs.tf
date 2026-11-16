@@ -1,10 +1,10 @@
 resource "aws_cloudwatch_log_group" "ecs" {
-  name              = "${var.project_name}-ecs-logs"
+  name              = "${local.name}-ecs-logs"
   retention_in_days = 7
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "${var.project_name}-ecs-task-execution-role"
+  name = "${local.name}-ecs-task-execution-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -25,11 +25,11 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 }
 
 resource "aws_ecs_cluster" "main" {
-  name = "${var.project_name}-ecs-cluster"
+  name = "${local.name}-ecs-cluster"
 }
 
 resource "aws_ecs_task_definition" "main" {
-  family                   = "${var.project_name}-task"
+  family                   = "${local.name}-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "main" {
 
   container_definitions = jsonencode([
     {
-      name      = "${var.project_name}-container"
+      name      = "${local.name}-container"
       image     = "${aws_ecr_repository.ecr_repo.repository_url}:latest"
       essential = true
       portMappings = [
@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "main" {
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
           "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = var.project_name
+          "awslogs-stream-prefix" = local.name
         }
       }
     }
@@ -60,16 +60,16 @@ resource "aws_ecs_task_definition" "main" {
 }
 
 resource "aws_ecs_service" "main" {
-  name            = "${var.project_name}-ecs-service"
+  name            = "${local.name}-ecs-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.main.arn
-  desired_count   = 1
+  desired_count   = var.desired_count
   launch_type     = "FARGATE"
 
   health_check_grace_period_seconds = 60
   load_balancer {
     target_group_arn = aws_lb_target_group.main.arn
-    container_name   = "${var.project_name}-container"
+    container_name   = "${local.name}-container"
     container_port   = 8000
   }
 

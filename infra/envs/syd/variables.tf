@@ -1,7 +1,18 @@
+variable "env" {
+  type    = string
+  default = "syd"
+}
+
 variable "aws_region" {
-  description = "部署资源的 AWS 区域"
+  description = "主站点区域（悉尼）"
   type        = string
   default     = "ap-southeast-2"
+}
+
+variable "dr_region" {
+  description = "DR 站点区域（墨尔本），ECR 复制的目标"
+  type        = string
+  default     = "ap-southeast-4"
 }
 
 variable "aws_profile" {

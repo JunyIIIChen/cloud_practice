@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 
 # Terraform
-infra/.terraform/
-infra/*.tfstate
-infra/*.tfstate.*
-infra/crash.log
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log

@@ -44,7 +44,7 @@ resource "aws_iam_role_policy" "github_actions_policy" {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload"
         ]
-        Resource = aws_ecr_repository.ecr_repo.arn
+        Resource = module.app.ecr_repo_arn
       }
     ]
   })

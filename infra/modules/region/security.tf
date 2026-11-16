@@ -1,11 +1,11 @@
 ########ec2_security_group###########
 
 resource "aws_security_group" "main" {
-  name        = "${var.project_name}-sg"
-  description = "Security group for ${var.project_name}"
+  name        = "${local.name}-sg"
+  description = "Security group for ${local.name}"
   vpc_id      = aws_vpc.main.id
   tags = {
-    Name = "${var.project_name}-sg"
+    Name = "${local.name}-sg"
   }
 }
 
@@ -31,11 +31,11 @@ resource "aws_vpc_security_group_ingress_rule" "inbound" {
 ##########ALB_SECURITY_GROUP###########
 
 resource "aws_security_group" "alb" {
-  name        = "${var.project_name}-alb-sg"
+  name        = "${local.name}-alb-sg"
   description = "Security group for ALB"
   vpc_id      = aws_vpc.main.id
   tags = {
-    Name = "${var.project_name}-alb-sg"
+    Name = "${local.name}-alb-sg"
   }
 }
 
