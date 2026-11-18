@@ -32,3 +32,9 @@ variable "vpc_cidr" {
   type        = string
   default     = "10.0.0.0/16"
 }
+
+variable "dr_region" {
+  description = "DR 站点区域（墨尔本），S3 跨区域复制的目标"
+  type        = string
+  default     = "ap-southeast-4"
+}
