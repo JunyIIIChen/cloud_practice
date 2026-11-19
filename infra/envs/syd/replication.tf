@@ -69,8 +69,54 @@ resource "aws_s3_bucket_replication_configuration" "ack" {
     }
 
     destination {
-      bucket        = local.dr_bucket_arn
+      bucket = local.dr_bucket_arn
       # storage_class = "STANDARD_IA" # 备份很少读，用低频访问更便宜
     }
   }
+}
+
+# ---------------------------------------------------------------
+# Batch Replication：把开启复制之前就存在的老对象补复制到 mel
+# 由 S3 Batch Operations 执行，所以需要单独一个 role
+# ---------------------------------------------------------------
+resource "aws_iam_role" "s3_batch_replication" {
+  name = "${var.project_name}-${var.env}-s3-batch-replication-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "batchoperations.s3.amazonaws.com" }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "s3_batch_replication" {
+  name = "s3-batch-replication"
+  role = aws_iam_role.s3_batch_replication.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        # 对每个老对象触发一次复制
+        Effect   = "Allow"
+        Action   = ["s3:InitiateReplication"]
+        Resource = "${module.app.ack_bucket_arn}/*"
+      },
+      {
+        # 读复制规则；自动生成对象清单（manifest）时要用到
+        Effect   = "Allow"
+        Action   = ["s3:GetReplicationConfiguration", "s3:PutInventoryConfiguration"]
+        Resource = module.app.ack_bucket_arn
+      },
+      {
+        # 任务完成报告写到源桶的 batch-reports/ 下
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = "${module.app.ack_bucket_arn}/batch-reports/*"
+      },
+    ]
+  })
 }
